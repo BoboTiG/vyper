@@ -38,12 +38,11 @@ def test_basic_grammar_empty():
 
 
 def utf8_encodable(terminal: str) -> bool:
+    if "\x00" in terminal or "\\ " in terminal or "\x0c" in terminal:
+        return False
     try:
-        if "\x00" not in terminal and "\\ " not in terminal and "\x0c" not in terminal:
-            terminal.encode("utf-8-sig")
-            return True
-        else:
-            return False
+        terminal.encode("utf-8-sig")
+        return True
     except UnicodeEncodeError:  # pragma: no cover
         # Very rarely, a "." in some terminal regex will generate a surrogate
         # character that cannot be encoded as UTF-8.  We apply this filter to
